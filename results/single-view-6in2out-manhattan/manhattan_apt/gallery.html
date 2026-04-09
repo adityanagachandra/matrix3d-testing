@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix3D 6-in-2-out Results — Manhattan Apartment</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f172a; color: #e2e8f0; font-family: Inter, system-ui, sans-serif; padding: 24px; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: #94a3b8; font-size: 0.875rem; margin-bottom: 24px; }
+  .section { margin-bottom: 32px; }
+  .section h2 { font-size: 1.1rem; color: #93c5fd; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .card { background: #1e293b; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
+  .card img { width: 100%; display: block; cursor: pointer; }
+  .card .label { padding: 8px 12px; font-size: 0.75rem; color: #94a3b8; }
+  .card .label span { color: #e2e8f0; font-weight: 600; }
+  video { width: 100%; max-width: 640px; border-radius: 8px; border: 1px solid #334155; }
+  .full-width { grid-column: 1 / -1; }
+  .status { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+  .status .tag { display: inline-block; background: #22c55e20; color: #4ade80; border: 1px solid #22c55e40; border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; margin-right: 8px; }
+  .status .tag.running { background: #f59e0b20; color: #fbbf24; border-color: #f59e0b40; }
+  a { color: #60a5fa; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .modal { display: none; position: fixed; inset: 0; background: #000c; z-index: 100; justify-content: center; align-items: center; }
+  .modal.active { display: flex; }
+  .modal img { max-width: 95vw; max-height: 95vh; object-fit: contain; }
+</style>
+</head>
+<body>
+
+<h1>Matrix3D — Manhattan Apartment (6-in-2-out)</h1>
+<p class="subtitle">Single-view to 3D reconstruction with conservative diffusion conditioning</p>
+
+<div class="status">
+  <span class="tag">Diffusion</span> 50 views generated (1 ref + 7 anchors + 42 fill-in)
+  <span class="tag">3DGS</span> 7000 iterations, 5.6M gaussians
+</div>
+
+<div class="section">
+  <h2>3D Gaussian Splat — Rendered Orbit</h2>
+  <video controls autoplay loop muted>
+    <source src="renders/orbit_3dgs.mp4" type="video/mp4">
+  </video>
+  <p style="color:#94a3b8; font-size:0.8rem; margin-top:8px;">245 frames rendered from trained 3DGS (50 poses × 5 interpolation steps, 30fps)</p>
+</div>
+
+<div class="section">
+  <h2>Diffusion Orbit Video (raw generated views)</h2>
+  <video controls loop muted>
+    <source src="diffusion-samples.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="section">
+  <h2>Anchor Views (1-in-7-out bootstrap)</h2>
+  <div class="grid">
+    <div class="card full-width">
+      <img src="batch_generated_images/manhattan_apt-anchor.png" onclick="showModal(this)">
+      <div class="label"><span>Anchor RGB</span> — 1 conditioned (ref) + 7 generated</div>
+    </div>
+    <div class="card full-width">
+      <img src="batch_generated_images/manhattan_apt-anchor-depth.png" onclick="showModal(this)">
+      <div class="label"><span>Anchor Depth</span> — all 8 views conditioned RGB+pose, depth generated</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fill-in Batches (6-in-2-out)</h2>
+  <p style="color:#94a3b8; font-size:0.8rem; margin-bottom:12px;">Each row: 6 conditioned anchor views (left) + 2 novel generated views (right). GT top, prediction bottom.</p>
+  <div class="grid">
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run0.png" onclick="showModal(this)"><div class="label"><span>Run 1</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run1.png" onclick="showModal(this)"><div class="label"><span>Run 2</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run2.png" onclick="showModal(this)"><div class="label"><span>Run 3</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run3.png" onclick="showModal(this)"><div class="label"><span>Run 4</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run4.png" onclick="showModal(this)"><div class="label"><span>Run 5</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run5.png" onclick="showModal(this)"><div class="label"><span>Run 6</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run6.png" onclick="showModal(this)"><div class="label"><span>Run 7</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run7.png" onclick="showModal(this)"><div class="label"><span>Run 8</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run8.png" onclick="showModal(this)"><div class="label"><span>Run 9</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run9.png" onclick="showModal(this)"><div class="label"><span>Run 10</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run10.png" onclick="showModal(this)"><div class="label"><span>Run 11</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run11.png" onclick="showModal(this)"><div class="label"><span>Run 12</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run12.png" onclick="showModal(this)"><div class="label"><span>Run 13</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run13.png" onclick="showModal(this)"><div class="label"><span>Run 14</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run14.png" onclick="showModal(this)"><div class="label"><span>Run 15</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run15.png" onclick="showModal(this)"><div class="label"><span>Run 16</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run16.png" onclick="showModal(this)"><div class="label"><span>Run 17</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run17.png" onclick="showModal(this)"><div class="label"><span>Run 18</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run18.png" onclick="showModal(this)"><div class="label"><span>Run 19</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run19.png" onclick="showModal(this)"><div class="label"><span>Run 20</span></div></div>
+    <div class="card"><img src="batch_generated_images/manhattan_apt-run20.png" onclick="showModal(this)"><div class="label"><span>Run 21</span></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Generated Images (orbit)</h2>
+  <div class="grid" id="orbit-grid"></div>
+</div>
+
+<div class="modal" id="modal" onclick="this.classList.remove('active')">
+  <img id="modal-img">
+</div>
+
+<script>
+function showModal(el) {
+  document.getElementById('modal-img').src = el.src;
+  document.getElementById('modal').classList.add('active');
+}
+const grid = document.getElementById('orbit-grid');
+for (let i = 0; i < 49; i++) {
+  const id = String(i).padStart(4, '0');
+  grid.innerHTML += `<div class="card"><img src="images/frame_${id}.png" onclick="showModal(this)" loading="lazy"><div class="label"><span>frame_${id}</span></div></div>`;
+}
+</script>
+</body>
+</html>
