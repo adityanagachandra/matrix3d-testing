@@ -25,7 +25,7 @@ fi
 source "$CFG_PATH"
 
 export NERFSTUDIO_METHOD_CONFIGS="splatfacto_matrix3d=splatfacto_matrix3d.splatfacto_configs:splatfacto_method"
-export PYTHONPATH="$PYTHONPATH:$REPO_DIR"
+export PYTHONPATH="${PYTHONPATH:-}:$REPO_DIR"
 
 NAME_EXT=$(basename "$INPUT_PATH")
 NAME="${NAME_EXT%.*}"
