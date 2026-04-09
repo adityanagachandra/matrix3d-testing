@@ -1,0 +1,21 @@
+ipdb
+imageio
+imageio-ffmpeg
+matplotlib
+numpy==1.26
+scipy
+omegaconf
+opencv-python
+plotly
+# HunyuanDiT (diffusers 0.31) imports MT5Tokenizer; Transformers 5.0+ removed it from the public API.
+transformers>=4.44,<5
+tensorboard
+open3d
+sentencepiece
+deepspeed
+torchtyping
+diffusers==0.31.0
+accelerate
+scikit-image
+torchmetrics
+nerfstudio @ git+https://github.com/nerfstudio-project/nerfstudio@fc4fc5cb15ad994ea82d8c651c9d42172d890de1
