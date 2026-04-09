@@ -7,7 +7,8 @@ scipy
 omegaconf
 opencv-python
 plotly
-transformers
+# HunyuanDiT (diffusers 0.31) imports MT5Tokenizer; Transformers 5.0+ removed it from the public API.
+transformers>=4.44,<5
 tensorboard
 open3d
 sentencepiece
